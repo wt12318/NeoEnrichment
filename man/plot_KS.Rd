@@ -4,7 +4,7 @@
 \alias{plot_KS}
 \title{plot K-S like graph for a single sample}
 \usage{
-plot_KS(mutation_file, barcode, mhc_type, IC50_threshold = 500)
+plot_KS(mutation_file, barcode, mhc_type = "I", IC50_threshold = 500)
 }
 \arguments{
 \item{mutation_file}{Mutations with neoantigen prediction (IC50).}

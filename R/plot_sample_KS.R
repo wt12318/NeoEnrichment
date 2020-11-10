@@ -8,9 +8,10 @@
 #' @return NULL
 #' @export
 #'
-plot_KS <- function(mutation_file,barcode,mhc_type,IC50_threshold=500){
+plot_KS <- function(mutation_file,barcode,mhc_type="I",IC50_threshold=500){
 
   test <- mutation_file %>% dplyr::filter(sample==barcode)%>%
+    dplyr::filter(!is.na(ccf_cn_assume)) %>%
     dplyr::select(MT_mean,sample,chromosome,position,ccf_cn_assume) %>%
     dplyr::mutate(index=paste(sample,chromosome,position,sep = ",")) %>%
     dplyr::distinct(index,.keep_all=T) %>%
@@ -38,8 +39,12 @@ plot_KS <- function(mutation_file,barcode,mhc_type,IC50_threshold=500){
   }
   mutation_dt <- mutation_dt %>%
     pivot_longer(cols = c("Neoantigen Set","Non Neoantigen Set"),names_to="type",values_to="value")
+  es <- NeoEnrichment:::cales(test,neo_list)
+  nes <- NeoEnrichment:::cal_p_and_normalized(es = es,neo_list = neo_list,mutation_dt = test) %>%
+    strsplit(.,",") %>% unlist %>% as.numeric() %>% format(., scientific = TRUE,digits = 3)
   p <- ggplot(mutation_dt) +
     geom_step( aes(x=index, y=value,color=type),size=1.5)+
-    theme_classic()
+    theme_classic()+
+    annotate("text", x=quantile(mutation_dt$index)[2], y=0.75, label=paste0("ES=",nes[1],"\nNES=",nes[2],"\np=",nes[3]), size=6)
   return(p)
 }

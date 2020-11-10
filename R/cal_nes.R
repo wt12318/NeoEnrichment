@@ -14,6 +14,10 @@
 #'
 cales_t <- function(file,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10){
   if(cal_type=="exp"){
+
+    file <- file %>%
+      filter(!is.na(exp))
+
     if(mhc_type=="I"){
       test <- file %>% filter(sample==barcode)%>%
         dplyr::select(MT_mean,exp,sample,chromosome,position) %>%
@@ -27,10 +31,15 @@ cales_t <- function(file,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
         dplyr::distinct(index,.keep_all=TRUE) %>%
         dplyr::arrange(desc(exp)) %>% dplyr::mutate(index=row_number())
     }
+    a <- nrow(test)
     test <- test %>%
       dplyr::mutate(rank = rank(exp)) %>%
-      dplyr::mutate(rank=abs((nrow(test)/2)-rank)+1)
+      dplyr::mutate(rank=abs((a/2)-rank)+1)
   }else{
+
+    file <- file %>%
+      filter(!is.na(ccf_cn_assume))
+
     if(mhc_type=="I"){
       test <- file %>% dplyr::filter(sample==barcode)%>%
         dplyr::select(MT_mean,sample,chromosome,position,ccf_cn_assume) %>%
@@ -44,9 +53,10 @@ cales_t <- function(file,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
         dplyr::distinct(index,.keep_all=T) %>%
         dplyr::arrange(desc(ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
     }
+    a <- nrow(test)
     test <- test %>%
       dplyr::mutate(rank = rank(ccf_cn_assume)) %>%
-      dplyr::mutate(rank=abs((nrow(test)/2)-rank)+1)
+      dplyr::mutate(rank=abs((a/2)-rank)+1)
   }
   neo_list <- ifelse(mhc_type=="I",test %>% filter(MT_mean<IC50_threshold) %>% dplyr::select(index),
                      test %>% filter(`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(index))

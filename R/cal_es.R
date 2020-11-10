@@ -4,6 +4,7 @@
 #' @param neoantigen_list Neoantigens list
 #'
 #' @return enrichment score
+#' @export
 #'
 #'
 #'

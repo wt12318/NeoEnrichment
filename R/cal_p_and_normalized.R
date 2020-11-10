@@ -5,6 +5,7 @@
 #' @param mutation_dt Mutations dataframe
 #'
 #' @return enrichment score, enrichment score, p value
+#' @export
 #'
 #'
 #'
@@ -17,5 +18,5 @@ cal_p_and_normalized <- function(es,neo_list,mutation_dt){
   p <- ifelse(es<0,mean(sample_res$res<es),mean(sample_res$res>es))
   nes <- ifelse(es<0,es/abs(mean(sample_res$res[sample_res$res<0])),
                 es/mean(sample_res$res[sample_res$res>0]))
-  es_p <- paste(es,nes,p,sep = ",")
+  es_p <- data.frame(es=es,nes=nes,p_value=p)
 }
