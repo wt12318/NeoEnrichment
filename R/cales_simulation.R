@@ -2,6 +2,7 @@
 #'
 #' @param test Mutation file.
 #' @param neoantigen_list Neoantigen list.
+#' @export
 #'
 #' @return es
 cales_simulation <- function(test,neoantigen_list){
