@@ -10,56 +10,56 @@
 #'
 #' @return es,nes,p
 #' @export
+#' @importFrom rlang .data
 #'
-#'
-cales_t <- function(file,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10){
+cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10){
   if(cal_type=="exp"){
 
-    file <- file %>%
+    file <- data %>%
       filter(!is.na(exp))
 
     if(mhc_type=="I"){
       test <- file %>% filter(sample==barcode)%>%
-        dplyr::select(MT_mean,exp,sample,chromosome,position) %>%
-        dplyr::mutate(index=paste(sample,chromosome,position,sep = ",")) %>%
-        dplyr::distinct(index,.keep_all=TRUE) %>%
-        dplyr::arrange(desc(exp)) %>% dplyr::mutate(index=row_number())
+        dplyr::select(.data$MT_mean,.data$exp,.data$sample,.data$chromosome,.data$position) %>%
+        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
+        dplyr::distinct(.data$index,.keep_all=TRUE) %>%
+        dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
     }else{
       test <- file %>% filter(sample==barcode)%>%
-        dplyr::select(`%Rank_best_perL`,exp,sample,chromosome,position) %>%
-        dplyr::mutate(index=paste(sample,chromosome,position,sep = ",")) %>%
-        dplyr::distinct(index,.keep_all=TRUE) %>%
-        dplyr::arrange(desc(exp)) %>% dplyr::mutate(index=row_number())
+        dplyr::select(.data$`%Rank_best_perL`,.data$exp,.data$sample,.data$chromosome,.data$position) %>%
+        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
+        dplyr::distinct(.data$index,.keep_all=TRUE) %>%
+        dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
     }
     a <- nrow(test)
     test <- test %>%
-      dplyr::mutate(rank = rank(exp)) %>%
+      dplyr::mutate(rank = rank(.data$exp)) %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
   }else{
 
-    file <- file %>%
+    file <- data %>%
       filter(!is.na(ccf_cn_assume))
 
     if(mhc_type=="I"){
       test <- file %>% dplyr::filter(sample==barcode)%>%
-        dplyr::select(MT_mean,sample,chromosome,position,ccf_cn_assume) %>%
-        dplyr::mutate(index=paste(sample,chromosome,position,sep = ",")) %>%
-        dplyr::distinct(index,.keep_all=T) %>%
-        dplyr::arrange(desc(ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
+        dplyr::select(.data$MT_mean,.data$sample,.data$chromosome,.data$position,.data$ccf_cn_assume) %>%
+        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
+        dplyr::distinct(.data$index,.keep_all=T) %>%
+        dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
     }else{
       test <- file %>% dplyr::filter(sample==barcode)%>%
-        dplyr::select(`%Rank_best_perL`,sample,chromosome,position,ccf_cn_assume) %>%
-        dplyr::mutate(index=paste(sample,chromosome,position,sep = ",")) %>%
-        dplyr::distinct(index,.keep_all=T) %>%
-        dplyr::arrange(desc(ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
+        dplyr::select(.data$`%Rank_best_perL`,.data$sample,.data$chromosome,.data$position,.data$ccf_cn_assume) %>%
+        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
+        dplyr::distinct(.data$index,.keep_all=T) %>%
+        dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
     }
     a <- nrow(test)
     test <- test %>%
-      dplyr::mutate(rank = rank(ccf_cn_assume)) %>%
+      dplyr::mutate(rank = rank(.data$ccf_cn_assume)) %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
   }
-  neo_list <- ifelse(mhc_type=="I",test %>% filter(MT_mean<IC50_threshold) %>% dplyr::select(index),
-                     test %>% filter(`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(index))
+  neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
+                     test %>% filter(.data$`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(.data$index))
   neo_list <- neo_list[[1]]
   if(length(neo_list)==0){
     return(paste(barcode,"no neoantigen"))

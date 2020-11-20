@@ -4,9 +4,14 @@
 #'
 #' @return mutation data with mutation type
 #' @export
-#' @import data.table
+#' @importFrom  data.table setDT
+#' @importFrom  data.table `:=`
+#' @import BSgenome
+#' @importFrom rlang .data
 #'
 get_mutation_type <- function(mutation){
+
+  a <- b <- trinucleotide <- alt_reverse <- alt <- mutation_type <- ref <- reverse <- NULL
 
   hsgs.installed = BSgenome::installed.genomes(splitNameParts = TRUE)
   data.table::setDT(x = hsgs.installed)
@@ -15,10 +20,10 @@ get_mutation_type <- function(mutation){
   ref_genome = BSgenome::getBSgenome(genome = ref_genome)
   mutation$position <- as.numeric(mutation$position)
   mutation <- mutation %>%
-    mutate(Start = position-1,End = position+1)
+    mutate(Start = .data$position-1,End = .data$position+1)
   extract.tbl <- data.table::setDT(mutation)
 
-  ss = BSgenome::getSeq(x = ref_genome, names = extract.tbl[,chromosome], start = extract.tbl[,Start] , end = extract.tbl[,End], as.character = TRUE)
+  ss = BSgenome::getSeq(x = ref_genome, names = extract.tbl[,.data$chromosome], start = extract.tbl[,.data$Start] , end = extract.tbl[,.data$End], as.character = TRUE)
   extract.tbl[,trinucleotide:= as.character(ss)]
 
   sub <- data.frame(x=c("T","C","G","A"),y=c("A","G","C","T"),stringsAsFactors = F)

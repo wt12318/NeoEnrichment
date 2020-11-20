@@ -5,7 +5,7 @@
 \title{calculate neoantigens NES for a sample}
 \usage{
 cales_t(
-  file,
+  data,
   barcode,
   calp = FALSE,
   cal_type = "exp",
@@ -15,8 +15,6 @@ cales_t(
 )
 }
 \arguments{
-\item{file}{Mutation file,folowing column are possible needed: MT_mean,exp,sample,chromosome,position,\%Rank_best_perL,ccf_cn_assume.}
-
 \item{barcode}{Tumor sample barcode.}
 
 \item{calp}{Bool value, calculate p value or not.}
@@ -28,6 +26,8 @@ cales_t(
 \item{IC50_threshold}{Mutations below this threshold are considered as MHC-I neoantigens.}
 
 \item{Rank_threshold}{Mutations below this threshold are considered as MHC-II neoantigens.}
+
+\item{file}{Mutation file,folowing column are possible needed: MT_mean,exp,sample,chromosome,position,\%Rank_best_perL,ccf_cn_assume.}
 }
 \value{
 es,nes,p

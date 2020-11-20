@@ -9,10 +9,15 @@ plot_pie(vector, expression, label)
 \arguments{
 \item{vector}{A numberic vector for plot}
 
-\item{expression}{A Strings for calculate percent}
+\item{expression}{A String, can be parsed as expression for calculate percent, usually a conditional expression}
 
-\item{label}{A character vector for display catalog}
+\item{label}{A character vector , for display catalog}
 }
 \description{
-Plot pie
+Plot pie plot for a numeric vector
+}
+\examples{
+a <- c(1,2,3,4)
+plot_pie(a,expression = "a < 2",c("a < 2","a >= 2"))
+
 }

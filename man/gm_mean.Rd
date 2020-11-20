@@ -2,7 +2,7 @@
 % Please edit documentation in R/cal_gm_mean.R
 \name{gm_mean}
 \alias{gm_mean}
-\title{Title}
+\title{Calculate geometric mean}
 \usage{
 gm_mean(x, na.rm = TRUE, zero.propagate = FALSE)
 }
@@ -13,9 +13,6 @@ gm_mean(x, na.rm = TRUE, zero.propagate = FALSE)
 
 \item{zero.propagate}{666}
 }
-\value{
-
-}
 \description{
-Title
+Calculate geometric mean
 }

@@ -1,10 +1,10 @@
-#' Title
+#' Calculate geometric mean
 #'
 #' @param x A numberic vector
 #' @param na.rm Whether remove NA
 #' @param zero.propagate 666
 #'
-#' @return
+#' @return NULL
 #' @export
 #'
 gm_mean = function(x, na.rm=TRUE, zero.propagate = FALSE){

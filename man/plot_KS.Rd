@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sample_KS.R
 \name{plot_KS}
 \alias{plot_KS}
-\title{plot K-S like graph for a single sample}
+\title{Plot K-S like graph}
 \usage{
 plot_KS(mutation_file, barcode, mhc_type = "I", IC50_threshold = 500)
 }
@@ -16,5 +16,14 @@ plot_KS(mutation_file, barcode, mhc_type = "I", IC50_threshold = 500)
 \item{IC50_threshold}{Threshold which IC50 below it can be thought as neoantigen}
 }
 \description{
-plot K-S like graph for a single sample
+Plot K-S like graph of neoantigen enrichment for a single sample. The x axis is mutation index ordered
+by descending mutation CCF. The y axis is the cumulative value for mutations. Walking through the mutation
+list (descend by ccf), when encounter a mutation is naoantigen, add a value (the rank of this mutation devided by sum of rank of all mutations)
+to the distribution of Neoantigen Set, otherwise add a value (number of non neoantigen mutations) to the distribution of
+Non Neoantigen Set. \cr
+This plot can be used to compare two distributions and calculate Neoantigen Enrichment score.
+}
+\examples{
+plot_KS(mutation_file = mt_test,barcode = "TCGA-OR-A5J1-01A")
+
 }
