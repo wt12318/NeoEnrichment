@@ -4,16 +4,24 @@
 \alias{get_cancer_type}
 \title{Get TCGA cancer type abbreviation}
 \usage{
-get_cancer_type(tumor_barcode, cores, parallel = FALSE, need_full_name = FALSE)
+get_cancer_type(
+  input,
+  cores,
+  parallel = FALSE,
+  need_full_name = FALSE,
+  input_type = "code"
+)
 }
 \arguments{
-\item{tumor_barcode}{TCGA tumor sample barcode}
+\item{input}{TCGA tumor sample barcode or TCGA cancer type full name}
 
 \item{cores}{How many cores to use if parallelization is used, only can ce used when parallel is TRUE}
 
 \item{parallel}{Bool value, use parallelization or not, default FALSE}
 
 \item{need_full_name}{Bool value, return TCGA cancer type full name or not, default FALSE}
+
+\item{input_type}{"code" or "full_name" for input of TCGA tumor sample barcode or TCGA cancer type full name, respectively.}
 }
 \value{
 cancer type
@@ -25,4 +33,5 @@ of this data can be seen at document by `?cancer_type_code`
 }
 \examples{
 get_cancer_type("TCGA-OR-A5J1",par=FALSE)
+get_cancer_type("Liver hepatocellular carcinoma",input_type="full_name")
 }
