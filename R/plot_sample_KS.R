@@ -28,7 +28,7 @@ plot_KS <- function(mutation_file,barcode,mhc_type="I",IC50_threshold=500){
     dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
     dplyr::distinct(.data$index,.keep_all=T) %>%
     dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number()) %>%
-    dplyr::mutate(rank = rank(.data$ccf_cn_assume))
+    dplyr::mutate(rank = as.numeric(factor(rank(.data$ccf_cn_assume))))
   test <- test %>% dplyr::mutate(rank=abs((nrow(test)/2)-rank)+1)
   neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
                      test %>% filter(.data$`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(.data$index))

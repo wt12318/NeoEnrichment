@@ -33,7 +33,7 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     }
     a <- nrow(test)
     test <- test %>%
-      dplyr::mutate(rank = rank(.data$exp)) %>%
+      dplyr::mutate(rank = as.numeric(factor(rank(.data$exp)))) %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
   }else{
 
@@ -55,7 +55,7 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     }
     a <- nrow(test)
     test <- test %>%
-      dplyr::mutate(rank = rank(.data$ccf_cn_assume)) %>%
+      dplyr::mutate(rank = as.numeric(factor(rank(.data$ccf_cn_assume)))) %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
   }
   neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
