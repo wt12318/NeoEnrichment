@@ -21,17 +21,13 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     if(mhc_type=="I"){
       test <- file %>% filter(sample==barcode)%>%
         dplyr::select(.data$MT_mean,.data$exp,.data$sample,.data$chromosome,.data$position) %>%
-        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
-        dplyr::distinct(.data$index,.keep_all=TRUE) %>%
         dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
     }else{
       test <- file %>% filter(sample==barcode)%>%
         dplyr::select(.data$`%Rank_best_perL`,.data$exp,.data$sample,.data$chromosome,.data$position) %>%
-        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
-        dplyr::distinct(.data$index,.keep_all=TRUE) %>%
         dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
     }
-    a <- nrow(test)
+    a <- max(test$rank)
     test <- test %>%
       dplyr::mutate(rank = as.numeric(factor(rank(.data$exp)))) %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
@@ -43,20 +39,18 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     if(mhc_type=="I"){
       test <- file %>% dplyr::filter(sample==barcode)%>%
         dplyr::select(.data$MT_mean,.data$sample,.data$chromosome,.data$position,.data$ccf_cn_assume) %>%
-        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
-        dplyr::distinct(.data$index,.keep_all=T) %>%
         dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
     }else{
       test <- file %>% dplyr::filter(sample==barcode)%>%
         dplyr::select(.data$`%Rank_best_perL`,.data$sample,.data$chromosome,.data$position,.data$ccf_cn_assume) %>%
-        dplyr::mutate(index=paste(.data$sample,.data$chromosome,.data$position,sep = ",")) %>%
-        dplyr::distinct(.data$index,.keep_all=T) %>%
         dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
     }
-    a <- nrow(test)
     test <- test %>%
-      dplyr::mutate(rank = as.numeric(factor(rank(.data$ccf_cn_assume)))) %>%
+      dplyr::mutate(rank = as.numeric(factor(rank(.data$ccf_cn_assume))))
+    a <- max(test$rank)
+    test <- test %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
+    test$rank <- ifelse(test$ccf_cn_assume==1,(test$rank)/2,test$rank)
   }
   neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
                      test %>% filter(.data$`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(.data$index))
@@ -65,6 +59,7 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     return(paste(barcode,"no neoantigen"))
   }else{
     es <- cales(test,neo_list)
+
     if(calp==T){
       r <- cal_p_and_normalized(es,neo_list,test)
     }else{r <- es}
