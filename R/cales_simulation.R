@@ -5,11 +5,17 @@
 #' @export
 #'
 #' @return es
-cales_simulation <- function(test,neoantigen_list,cal_type){
+cales_simulation <- function(test,neoantigen_list,cal_type,type){
   a <- sum(test[test$mutation_id %in% neoantigen_list,"rank"])
-  b <- (nrow(test)-length(neoantigen_list))
+  if(type=="I"){
+    b <- (nrow(test)-length(neoantigen_list))
+    test$re <- ifelse(test$mutation_id %in% neoantigen_list,((test$rank)/a),-(1/b))
 
-  test$re <- ifelse(test$mutation_id %in% neoantigen_list,((test$rank)/a),-(1/b))
+  }else{
+    b <- sum(test[!(test$mutation_id %in% neoantigen_list),"rank"])
+    test$re <- ifelse(test$mutation_id %in% neoantigen_list,((test$rank)/a),-((test$rank)/b))
+
+  }
   test$cum_re <- cumsum(test$re)
   if(cal_type=="ccf"){
     test_1 <- test %>% filter(ccf_cn_assume==1)
