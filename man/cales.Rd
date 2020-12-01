@@ -4,7 +4,7 @@
 \alias{cales}
 \title{calculate enrichment score for neoantigens}
 \usage{
-cales(mutation_dt, neoantigen_list)
+cales(mutation_dt, neoantigen_list, cal_type, type)
 }
 \arguments{
 \item{mutation_dt}{Mutations dataframe}

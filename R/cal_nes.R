@@ -12,7 +12,7 @@
 #' @export
 #' @importFrom rlang .data
 #'
-cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10){
+cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I"){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -27,9 +27,10 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
         dplyr::select(.data$`%Rank_best_perL`,.data$exp,.data$sample,.data$chromosome,.data$position) %>%
         dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
     }
-    a <- max(test$rank)
     test <- test %>%
-      dplyr::mutate(rank = as.numeric(factor(rank(.data$exp)))) %>%
+      dplyr::mutate(rank = as.numeric(factor(rank(.data$exp))))
+    a <- nrow(test)
+    test <- test %>%
       dplyr::mutate(rank=abs((a/2)-rank)+1)
   }else{
 
@@ -58,10 +59,10 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
   if(length(neo_list)==0){
     return(paste(barcode,"no neoantigen"))
   }else{
-    es <- cales(test,neo_list)
+    es <- cales(test,neo_list,cal_type=cal_type,type=type)
 
     if(calp==T){
-      r <- cal_p_and_normalized(es,neo_list,test)
+      r <- cal_p_and_normalized(es,neo_list,test,cal_type=cal_type,type=type)
     }else{r <- es}
   }
 }

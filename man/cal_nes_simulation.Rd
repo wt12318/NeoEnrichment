@@ -4,7 +4,7 @@
 \alias{cal_nes_simulation}
 \title{calculate p and nes for simulation}
 \usage{
-cal_nes_simulation(es, neo_list, test)
+cal_nes_simulation(es, neo_list, test, cal_type)
 }
 \arguments{
 \item{es}{Es.}

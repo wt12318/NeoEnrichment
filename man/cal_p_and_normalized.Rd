@@ -4,7 +4,7 @@
 \alias{cal_p_and_normalized}
 \title{calculate p value and normalized enrichment score for neoantigens}
 \usage{
-cal_p_and_normalized(es, neo_list, mutation_dt)
+cal_p_and_normalized(es, neo_list, mutation_dt, cal_type, type)
 }
 \arguments{
 \item{es}{Enrichment score}

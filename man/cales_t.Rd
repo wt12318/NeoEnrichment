@@ -11,7 +11,8 @@ cales_t(
   cal_type = "exp",
   mhc_type = "I",
   IC50_threshold = 500,
-  Rank_threshold = 10
+  Rank_threshold = 10,
+  type = "I"
 )
 }
 \arguments{

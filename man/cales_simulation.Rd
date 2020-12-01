@@ -4,7 +4,7 @@
 \alias{cales_simulation}
 \title{calculate es for simulation}
 \usage{
-cales_simulation(test, neoantigen_list)
+cales_simulation(test, neoantigen_list, cal_type)
 }
 \arguments{
 \item{test}{Mutation file.}
