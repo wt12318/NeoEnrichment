@@ -12,7 +12,10 @@ cales_t(
   mhc_type = "I",
   IC50_threshold = 500,
   Rank_threshold = 10,
-  type = "I"
+  type = "I",
+  trim,
+  DAI,
+  DAI_threshold
 )
 }
 \arguments{
