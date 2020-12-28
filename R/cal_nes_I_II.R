@@ -1,4 +1,4 @@
-#' calculate neoantigens NES for a sample
+#' calculate neoantigens which can bind with MHC-I and MHC-II NES for a sample
 #'
 #' @param data Mutation file,folowing column are possible needed: MT_mean,exp,sample,chromosome,position,\%Rank_best_perL,ccf_cn_assume.
 #' @param barcode Tumor sample barcode.
@@ -12,8 +12,8 @@
 #' @export
 #' @importFrom rlang .data
 #'
-cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I",trim,DAI,DAI_threshold,
-                    sample_counts,cal_I_II=FALSE){
+cales_t_I_II <- function(data,barcode,calp=FALSE,cal_type="exp",IC50_threshold=500,Rank_threshold=10,type="I",trim,DAI,DAI_threshold,
+                    sample_counts){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -49,12 +49,14 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     }
   }
   if(DAI==TRUE){
-    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index),
-                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index))
+    neo_list <- test %>%
+      filter(.data$MT_mean<IC50_threshold & .data$`%Rank_best_perL`<Rank_threshold & .data$DAI>DAI_threshold) %>%
+      dplyr::select(.data$index)
     neo_list <- neo_list[[1]]
   }else{
-    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
-                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(.data$index))
+    neo_list <- neo_list <- test %>%
+      filter(.data$MT_mean<IC50_threshold & .data$`%Rank_best_perL`<Rank_threshold) %>%
+      dplyr::select(.data$index)
     neo_list <- neo_list[[1]]
   }
 

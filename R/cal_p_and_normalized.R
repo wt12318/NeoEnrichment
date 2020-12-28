@@ -9,9 +9,9 @@
 #'
 #'
 #'
-cal_p_and_normalized <- function(es,neo_list,mutation_dt,cal_type,type,trim){
-  sample_res <- data.frame(res=rep(1,1000))
-  for (i in 1:1000) {
+cal_p_and_normalized <- function(es,neo_list,mutation_dt,cal_type,type,trim,sample_counts){
+  sample_res <- data.frame(res=rep(1,sample_counts))
+  for (i in 1:sample_counts) {
     neoantigen_list <- sample(mutation_dt$index,length(neo_list),replace = F)
     sample_res$res[i] <- cales(mutation_dt,neoantigen_list,cal_type=cal_type,type=type,trim = trim)
   }
