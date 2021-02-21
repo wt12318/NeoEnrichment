@@ -11,7 +11,8 @@ cal_p_and_normalized(
   cal_type,
   type,
   trim,
-  sample_counts
+  sample_counts,
+  nes_type = "I"
 )
 }
 \arguments{

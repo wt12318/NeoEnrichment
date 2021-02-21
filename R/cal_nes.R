@@ -13,7 +13,7 @@
 #' @importFrom rlang .data
 #'
 cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I",trim,DAI,DAI_threshold,
-                    sample_counts,cal_I_II=FALSE){
+                    sample_counts,cal_I_II=FALSE,nes_type="I"){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -65,7 +65,7 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
     es <- cales(test,neo_list,cal_type=cal_type,type=type,trim=trim)
 
     if(calp==T){
-      r <- cal_p_and_normalized(es,neo_list,test,cal_type=cal_type,type=type,trim=trim,sample_counts)
+      r <- cal_p_and_normalized(es,neo_list,test,cal_type=cal_type,type=type,trim=trim,sample_counts,nes_type="I")
     }else{r <- es}
   }
 }
