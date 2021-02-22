@@ -19,7 +19,7 @@ cal_nes_new <- function(dt){
   tmp <- tmp %>%
     mutate(index = c(1:nrow(tmp))) %>%
     arrange(desc(index)) %>%
-    mutate(rank=abs((100/2)-index))
+    mutate(rank=abs((100/2)-index)+1)
 
   add <- 1/sum(tmp$Freq*tmp$rank)
   minus <- 1/(100-sum(tmp$Freq!=0))
@@ -32,22 +32,41 @@ cal_nes_new <- function(dt){
   neo_counts <- sum(dt$MT_mean<500)
 
   re <- vector("numeric",1000)
-  for (i in 1:1000){
-    tmp_dt <- sample(tmp$Var1,neo_counts,
-                     replace = TRUE) %>% table %>% as.data.frame(stringsAsFactors=FALSE)
-    tmp_dt <- tmp_dt %>%
-      mutate(index = c(1:nrow(tmp_dt))) %>%
-      arrange(desc(index)) %>%
-      mutate(rank=abs((100/2)-index))
+  # for (i in 1:1000){
+  #   tmp_dt <- sample(tmp$Var1,neo_counts,
+  #                    replace = TRUE) %>% table %>% as.data.frame(stringsAsFactors=FALSE)
+  #   tmp_dt <- tmp_dt %>%
+  #     mutate(index = c(1:nrow(tmp_dt))) %>%
+  #     arrange(desc(index)) %>%
+  #     mutate(rank=abs((100/2)-index))
+  #
+  #   add1 <- 1/sum(tmp_dt$Freq*tmp_dt$rank)
+  #   minus1 <- 1/(100-sum(tmp_dt$Freq!=0))
+  #
+  #   tmp_dt$re <- ifelse(tmp_dt$Freq == 0,-minus1,tmp_dt$Freq*tmp_dt$rank * add1)
+  #   tmp_dt$cum_re <- cumsum(tmp_dt$re)
+  #
+  #   re[[i]] <- max(0,tmp_dt$cum_re)-abs(min(tmp_dt$cum_re,0))
+  # }
 
-    add1 <- 1/sum(tmp_dt$Freq*tmp_dt$rank)
-    minus1 <- 1/(100-sum(tmp_dt$Freq!=0))
+  re <- mapply(
+    function(x,...){
+      tmp_dt <- sample(tmp$Var1,neo_counts,
+                       replace = TRUE) %>% table %>% as.data.frame(stringsAsFactors=FALSE)
+      tmp_dt <- tmp_dt %>%
+        mutate(index = c(1:nrow(tmp_dt))) %>%
+        arrange(desc(index)) %>%
+        mutate(rank=abs((100/2)-index)+1)
 
-    tmp_dt$re <- ifelse(tmp_dt$Freq == 0,-minus1,tmp_dt$Freq*tmp_dt$rank * add1)
-    tmp_dt$cum_re <- cumsum(tmp_dt$re)
+      add1 <- 1/sum(tmp_dt$Freq*tmp_dt$rank)
+      minus1 <- 1/(100-sum(tmp_dt$Freq!=0))
 
-    re[[i]] <- max(0,tmp_dt$cum_re)-abs(min(tmp_dt$cum_re,0))
-  }
+      tmp_dt$re <- ifelse(tmp_dt$Freq == 0,-minus1,tmp_dt$Freq*tmp_dt$rank * add1)
+      tmp_dt$cum_re <- cumsum(tmp_dt$re)
+
+      return(max(0,tmp_dt$cum_re)-abs(min(tmp_dt$cum_re,0)))
+    },c(1:1000),MoreArgs=list(tmp,neo_counts)
+  )
 
   p <- ifelse(es<0,(sum(re<es)+1)/(1000+1),
               (sum(re>es)+1)/(1000+1))
