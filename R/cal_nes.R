@@ -12,8 +12,8 @@
 #' @export
 #' @importFrom rlang .data
 #'
-cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I",trim,DAI,DAI_threshold,
-                    sample_counts,cal_I_II=FALSE,nes_type="I"){
+cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I",trim,other_par="DAI",DAI_threshold,
+                    sample_counts,cal_I_II=FALSE,nes_type="I",exp_threshold=1){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -48,9 +48,13 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
         dplyr::mutate(rank=abs((a/2)-rank)+1)
     }
   }
-  if(DAI==TRUE){
+  if(other_par=="DAI"){
     neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index),
                        test %>% filter(.data$`%Rank_best_perL`<Rank_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index))
+    neo_list <- neo_list[[1]]
+  }else if (other_par == "exp"){
+    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold & .data$exp > exp_threshold) %>% dplyr::select(.data$index),
+                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold & .data$exp > exp_threshold) %>% dplyr::select(.data$index))
     neo_list <- neo_list[[1]]
   }else{
     neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),

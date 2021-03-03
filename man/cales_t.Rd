@@ -14,11 +14,12 @@ cales_t(
   Rank_threshold = 10,
   type = "I",
   trim,
-  DAI,
+  other_par = "DAI",
   DAI_threshold,
   sample_counts,
   cal_I_II = FALSE,
-  nes_type = "I"
+  nes_type = "I",
+  exp_threshold = 1
 )
 }
 \arguments{
