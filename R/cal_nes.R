@@ -4,16 +4,13 @@
 #' @param barcode Tumor sample barcode.
 #' @param calp Bool value, calculate p value or not.
 #' @param cal_type Should be "ccf" or "exp", calculate enrichment score in a aspect of Cancer Cell Fraction or Expression.
-#' @param mhc_type Should be "I" or "II" ,calculate enrichmrnt score for MHC-I or MHC-II.
-#' @param IC50_threshold Mutations below this threshold are considered as MHC-I neoantigens.
-#' @param Rank_threshold Mutations below this threshold are considered as MHC-II neoantigens.
-#'
+
 #' @return es,nes,p
 #' @export
 #' @importFrom rlang .data
 #'
-cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_threshold=500,Rank_threshold=10,type="I",trim,other_par="DAI",DAI_threshold,
-                    sample_counts,cal_I_II=FALSE,nes_type="I",exp_threshold=1){
+cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",type="I",
+                    sample_counts){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -30,46 +27,27 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",mhc_type="I",IC50_thr
   }else{
 
     file <- data %>%
-      filter(!is.na(ccf_cn_assume))
+      filter(!is.na(ccf))
 
     test <- file %>% dplyr::filter(sample==barcode)%>%
-      dplyr::arrange(desc(.data$ccf_cn_assume)) %>% dplyr::mutate(index=row_number())
+      dplyr::arrange(desc(.data$ccf),desc(.data$dna_vaf)) %>% dplyr::mutate(index=row_number())
+
+    total_row <- nrow(test)
 
     test <- test %>%
-      dplyr::mutate(rank = as.numeric(factor(rank(.data$ccf_cn_assume))))
-    if(trim==TRUE){
-      a <- max(test$rank)
-      test <- test %>%
-        dplyr::mutate(rank=abs((a/2)-rank)+1)
-      test$rank <- ifelse(test$ccf_cn_assume==1,(test$rank)/2,test$rank)
-    }else{
-      a <- nrow(test)
-      test <- test %>%
-        dplyr::mutate(rank=abs((a/2)-rank)+1)
-    }
+      dplyr::mutate(rank = abs((total_row/2)-c(total_row:1))+1)
   }
-  if(other_par=="DAI"){
-    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index),
-                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold & .data$DAI>DAI_threshold) %>% dplyr::select(.data$index))
-    neo_list <- neo_list[[1]]
-  }else if (other_par == "exp"){
-    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold & .data$exp > exp_threshold) %>% dplyr::select(.data$index),
-                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold & .data$exp > exp_threshold) %>% dplyr::select(.data$index))
-    neo_list <- neo_list[[1]]
-  }else{
-    neo_list <- ifelse(mhc_type=="I",test %>% filter(.data$MT_mean<IC50_threshold) %>% dplyr::select(.data$index),
-                       test %>% filter(.data$`%Rank_best_perL`<Rank_threshold) %>% dplyr::select(.data$index))
-    neo_list <- neo_list[[1]]
-  }
+  neo_list <- test %>% filter(.data$neo == "yes") %>% dplyr::select(.data$index)
+  neo_list <- neo_list[[1]]
 
 
   if(length(neo_list)==0){
     return(paste(barcode,"no neoantigen"))
   }else{
-    es <- cales(test,neo_list,cal_type=cal_type,type=type,trim=trim)
+    es <- cales(test,neo_list,type=type)
 
     if(calp==T){
-      r <- cal_p_and_normalized(es,neo_list,test,cal_type=cal_type,type=type,trim=trim,sample_counts,nes_type="I")
+      r <- cal_p_and_normalized(es,neo_list,test,type=type,sample_counts)
     }else{r <- es}
   }
 }
