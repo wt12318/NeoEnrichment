@@ -10,7 +10,8 @@ cales_t(
   calp = FALSE,
   cal_type = "exp",
   type = "I",
-  sample_counts
+  sample_counts,
+  weight
 )
 }
 \arguments{

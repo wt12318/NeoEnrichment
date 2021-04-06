@@ -16,8 +16,8 @@ cal_p_and_normalized <- function(es,neo_list,mutation_dt,type,sample_counts){
     sample_res$res[i] <- cales(mutation_dt,neoantigen_list,type=type)
   }
   #p <- ifelse(es<0,mean(sample_res$res<es),mean(sample_res$res>es))
-  p <- ifelse(es<0,(sum(sample_res$res<es)+1)/(sample_counts+1),
-              (sum(sample_res$res>es)+1)/(sample_counts+1))
+  p <- ifelse(es<0,(sum(sample_res$res<=es)+1)/(sample_counts+1),
+              (sum(sample_res$res>=es)+1)/(sample_counts+1))
   nes <- case_when(
     es<0 ~ es/abs(mean(sample_res$res[sample_res$res<0])),
     es>0 ~ es/abs(mean(sample_res$res[sample_res$res>0])),
