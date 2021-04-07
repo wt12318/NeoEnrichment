@@ -10,7 +10,7 @@
 #' @importFrom rlang .data
 #'
 cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",type="I",
-                    sample_counts,weight){
+                    sample_counts){
   if(cal_type=="exp"){
 
     file <- data %>%
@@ -30,14 +30,9 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",type="I",
       filter(!is.na(ccf))
 
     test <- file %>% dplyr::filter(sample==barcode)%>%
-      dplyr::arrange(desc(.data$ccf)) %>%
+      dplyr::arrange(desc(.data$ccf),desc(.data$vaf)) %>%
       dplyr::mutate(index=row_number())
-    test$rank <- rank(test$ccf,ties.method = "average")
-
-    #total_row <- nrow(test)
-
-    test[,"rank"] <- (test$rank - mean(test$rank))/sd(test$rank)
-    test$rank_ccf <- (abs(test$rank)^weight)+1
+    test$rank <- abs(nrow(test)/2 - seq(nrow(test):1))+1
   }
   neo_list <- test %>% filter(.data$neo == "yes") %>% dplyr::select(.data$index)
   neo_list <- neo_list[[1]]

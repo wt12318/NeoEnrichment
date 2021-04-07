@@ -21,8 +21,8 @@ cal_nes_new <- function(dt,sample_counts){
     sample_res <- data.frame(tmp_es_neo=rep(1,sample_counts),
                              tmp_es_not_neo=rep(1,sample_counts),
                              tmp_diff=rep(1,sample_counts))
-    sample_res$tmp_es_not_neo <- es_not_neo
-    neo_counts <- sum(dt$neo=="yes")
+    #sample_res$tmp_es_not_neo <- es_not_neo
+    #neo_counts <- sum(dt$neo=="yes")
     interval_mid <- seq(0.005,1,0.01)
     for (i in 1:sample_counts) {
       # tmp_dt <- dt %>%
@@ -36,8 +36,10 @@ cal_nes_new <- function(dt,sample_counts){
       #tmp_dt$ccf[tmp_dt$neo=="yes"] <- runif(neo_counts)
       #tmp_dt$ccf[tmp_dt$neo=="yes"] <- sample(interval_mid,neo_counts,replace = TRUE)
 
-      tmp_dt$ccf[tmp_dt$neo=="yes"] <- sample(interval_mid,neo_counts,replace = TRUE)
+      #tmp_dt$ccf[tmp_dt$neo=="yes"] <- sample(interval_mid,neo_counts,replace = TRUE)
+      tmp_dt$ccf <- sample(interval_mid,nrow(tmp_dt),replace = TRUE)
 
+      sample_res$tmp_es_not_neo[i] <- cal_es_new(tmp_dt,type = "not_neo")
       sample_res$tmp_es_neo[i] <- cal_es_new(tmp_dt,type = "neo")
       #sample_res$tmp_es_not_neo[i] <-  cal_es_new(tmp_dt,type = "not_neo")
     }
