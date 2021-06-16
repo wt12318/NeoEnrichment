@@ -2,8 +2,10 @@
 
 export("%>%")
 export(cal_es_new)
+export(cal_es_new_test)
 export(cal_es_sep)
 export(cal_nes_new)
+export(cal_nes_new_test)
 export(cal_nes_simulation)
 export(cal_p_and_normalized)
 export(cal_p_and_normalized_b)

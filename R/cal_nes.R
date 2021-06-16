@@ -19,14 +19,11 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",type="I",
     test <- file %>% filter(sample==barcode)%>%
       dplyr::arrange(desc(.data$exp)) %>% dplyr::mutate(index=row_number())
 
-    test <- test %>%
-      dplyr::mutate(rank = as.numeric(factor(rank(.data$exp))))
-    a <- nrow(test)
-    test <- test %>%
-      dplyr::mutate(rank=abs((a/2)-rank)+1)
+    test$rank <- abs(nrow(test)/2 - seq(nrow(test):1))+1
   }else{
 
     file <- data %>%
+      filter(!is.na(vaf)) %>%
       filter(!is.na(ccf))
 
     test <- file %>% dplyr::filter(sample==barcode)%>%
@@ -34,7 +31,7 @@ cales_t <- function(data,barcode,calp=FALSE,cal_type="exp",type="I",
       dplyr::mutate(index=row_number())
     test$rank <- abs(nrow(test)/2 - seq(nrow(test):1))+1
   }
-  neo_list <- test %>% filter(.data$neo == "yes") %>% dplyr::select(.data$index)
+  neo_list <- test %>% filter(.data$neo == "neo") %>% dplyr::select(.data$index)
   neo_list <- neo_list[[1]]
 
 
