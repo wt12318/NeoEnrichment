@@ -4,7 +4,7 @@
 \alias{cal_es_new_test}
 \title{cal nes test}
 \usage{
-cal_es_new_test(dt, type)
+cal_es_new_test(dt)
 }
 \arguments{
 \item{dt}{dataframe}
