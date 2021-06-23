@@ -4,7 +4,7 @@
 \alias{cal_nes_new_test}
 \title{cal nes test}
 \usage{
-cal_nes_new_test(dt, sample_counts)
+cal_nes_new_test(dt, sample_counts = 1000, need_p = TRUE)
 }
 \arguments{
 \item{dt}{dataframe}

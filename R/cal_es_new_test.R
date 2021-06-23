@@ -38,6 +38,9 @@ cal_es_new_test <- function(dt){
     add <- 1/sum(tmp_obj_neo[tmp_obj_neo$Freq!=0,"rank"]*tmp_obj_neo[tmp_obj_neo$Freq!=0,"Freq"])
     add2 <- 1/sum(tmp_obj_sys[tmp_obj_sys$Freq!=0,"rank"]*tmp_obj_sys[tmp_obj_sys$Freq!=0,"Freq"])
 
+    # add <- 1/sum(tmp_obj_neo$Freq!=0)
+    # add2 <- 1/sum(tmp_obj_sys$Freq!=0)
+
     tmp_obj_neo$re <- ifelse(tmp_obj_neo$Freq == 0,0,
                          ((tmp_obj_neo$rank)*tmp_obj_neo$Freq)*add)
     tmp_obj_neo$cum_re <- cumsum(tmp_obj_neo$re)
@@ -45,6 +48,14 @@ cal_es_new_test <- function(dt){
     tmp_obj_sys$re <- ifelse(tmp_obj_sys$Freq == 0,0,
                              ((tmp_obj_sys$rank)*tmp_obj_sys$Freq)*add2)
     tmp_obj_sys$cum_re <- cumsum(tmp_obj_sys$re)
+
+    # tmp_obj_neo$re <- ifelse(tmp_obj_neo$Freq == 0,0,
+    #                          add)
+    # tmp_obj_neo$cum_re <- cumsum(tmp_obj_neo$re)
+    #
+    # tmp_obj_sys$re <- ifelse(tmp_obj_sys$Freq == 0,0,
+    #                          add2)
+    # tmp_obj_sys$cum_re <- cumsum(tmp_obj_sys$re)
 
     diff <- tmp_obj_neo$cum_re - tmp_obj_sys$cum_re
 
