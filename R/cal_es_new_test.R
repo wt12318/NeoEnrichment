@@ -18,7 +18,7 @@ cal_es_new_test <- function(dt){
 
   tmp_obj_neo <- table(cut(obj_neo$ccf,interval)) %>% as.data.frame()
   tmp_obj_sys <- table(cut(obj_sys$ccf,interval)) %>% as.data.frame()
-  if (nrow(tmp_obj_neo)==0){
+  if (sum(tmp_obj_neo$Freq)==0){
     return("there are no neoantigen/no_neoantigen in this sample")
   }else{
     ll <- nrow(tmp_obj_neo)
